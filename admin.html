@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090711">
+  <title>Admin Config — Vortex</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .admin-wrap {
+      max-width: 600px;
+      margin: 35px auto;
+    }
+
+    .admin-title {
+      font: 700 28px Outfit;
+      margin-bottom: 7px;
+    }
+
+    .admin-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+
+    .admin-card {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: var(--panel);
+      margin-bottom: 15px;
+    }
+
+    .admin-card h2 {
+      font: 600 17px Outfit;
+      margin-bottom: 15px;
+    }
+
+    .field {
+      display: block;
+      margin: 13px 0;
+    }
+
+    .field span {
+      display: block;
+      font-size: 11px;
+      color: #c7b9e8;
+      margin-bottom: 7px;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #0c0a14;
+      color: var(--text);
+      outline: none;
+    }
+
+    .primary {
+      width: 100%;
+      padding: 13px;
+      border: 0;
+      border-radius: 10px;
+      background: linear-gradient(135deg,#a46cff,#7845d9);
+      color: white;
+      font-weight: 800;
+      font-size: 11px;
+    }
+
+    .secondary {
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: transparent;
+      color: #d7c5ff;
+      font-size: 11px;
+    }
+
+    .danger {
+      color: #ff8caa;
+      border-color: #ff8caa55;
+    }
+
+    .admin-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #ffffff12;
+    }
+
+    .admin-item:last-child {
+      border: 0;
+    }
+
+    .admin-item strong {
+      display: block;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .admin-item small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #adminStatus {
+      font-size: 11px;
+      color: #c7aaff;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    @media(max-width:450px) {
+      .admin-item {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .admin-actions {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+
+    <header class="header">
+      <a class="brand" href="./">
+        <span class="brand-icon">V</span>
+
+        <span class="brand-info">
+          <strong>VORTEX <span>ADMIN</span></strong>
+          <small>CONFIG MANAGEMENT</small>
+        </span>
+      </a>
+
+      <a class="admin-button" href="./">
+        LIHAT WEB ↗
+      </a>
+    </header>
+
+    <section class="admin-wrap">
+
+      <h1 class="admin-title">Admin Panel</h1>
+
+      <p class="admin-desc">
+        Kelola file config yang akan ditampilkan pada halaman download.
+      </p>
+
+      <section id="loginCard" class="admin-card">
+        <h2>Login Admin</h2>
+
+        <form id="loginForm">
+          <label class="field">
+            <span>Password Admin</span>
+            <input
+              id="password"
+              type="password"
+              autocomplete="current-password"
+              required
+              placeholder="Masukkan password admin"
+            >
+          </label>
+
+          <button class="primary" type="submit">
+            LOGIN
+          </button>
+        </form>
+      </section>
+
+      <section id="dashboard" class="hidden">
+
+        <div class="admin-card">
+          <h2>Upload Config Baru</h2>
+
+          <form id="uploadForm">
+
+            <label class="field">
+              <span>Nama Config</span>
+              <input
+                id="title"
+                name="title"
+                maxlength="80"
+                required
+                placeholder="Contoh: Config Aim"
+              >
+            </label>
+
+            <label class="field">
+              <span>File Config</span>
+              <input
+                id="configFile"
+                name="file"
+                type="file"
+                required
+              >
+            </label>
+
+            <label class="field">
+              <span>Gambar Thumbnail (opsional)</span>
+              <input
+                id="imageFile"
+                name="image"
+                type="file"
+                accept="image/*"
+              >
+            </label>
+
+            <button
+              class="primary"
+              id="uploadButton"
+              type="submit"
+            >
+              UPLOAD CONFIG
+            </button>
+
+          </form>
+
+          <p id="adminStatus" role="status"></p>
+        </div>
+
+        <div class="admin-card">
+          <h2>Config Tersimpan</h2>
+          <div id="adminList">Memuat data...</div>
+        </div>
+
+        <button
+          id="logoutButton"
+          class="secondary"
+          type="button"
+        >
+          LOGOUT
+        </button>
+
+      </section>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>
