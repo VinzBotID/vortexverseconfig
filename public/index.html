@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090711">
+<title>Vortex Config</title>
+<style>
+:root{--bg:#090711;--card:#14101f;--card2:#1b1530;--line:#2c2447;--text:#f1eefb;--mut:#9a92b8;--acc:#8b5cf6;--acc2:#c084fc}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(circle at top,#1a1233,#090711 60%) fixed;color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding:20px 16px 120px}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:18px}
+.badge{display:inline-block;font-size:11px;letter-spacing:.12em;color:var(--acc2);border:1px solid var(--line);border-radius:999px;padding:5px 12px;margin-bottom:10px}
+h1{font-size:30px;letter-spacing:.02em}
+h1 span{color:var(--acc2)}
+.sub{color:var(--mut);font-size:12px;letter-spacing:.18em;margin-top:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px}
+.row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px}
+h2{font-size:15px;letter-spacing:.06em}
+.count{font-size:12px;color:var(--mut);letter-spacing:.06em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:14px;padding:13px 10px;font-weight:700;font-size:13px;letter-spacing:.04em;cursor:pointer;text-transform:uppercase;font-family:inherit;position:relative}
+.btn.on{background:linear-gradient(135deg,#5b3bb5,#8b5cf6);border-color:var(--acc2)}
+.btn .n{position:absolute;top:-7px;right:-4px;background:var(--acc2);color:#120a24;border-radius:999px;font-size:10px;min-width:18px;height:18px;line-height:18px;padding:0 5px}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.preview{border:1.5px dashed var(--line);border-radius:14px;padding:14px;min-height:90px;display:flex;flex-wrap:wrap;gap:8px;align-content:center;justify-content:center}
+.empty{color:var(--mut);font-size:13px;text-align:center;width:100%}
+.chip{background:var(--card2);border:1px solid var(--acc);border-radius:999px;padding:7px 8px 7px 12px;font-size:12px;display:flex;gap:8px;align-items:center}
+.chip b{color:var(--acc2);text-transform:uppercase;font-size:10px;letter-spacing:.08em}
+.chip button{background:none;border:none;color:var(--mut);font-size:16px;cursor:pointer;line-height:1}
+.items{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.item{background:var(--card2);border:2px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;text-align:left;color:var(--text);font-family:inherit;padding:0}
+.item.on{border-color:var(--acc2);box-shadow:0 0 0 3px rgba(139,92,246,.3)}
+.thumb{aspect-ratio:1/1;background:#0f0b1c;display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:30px;font-weight:800}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.item .t{padding:9px 10px;font-size:12px;font-weight:600;word-break:break-word}
+.none{grid-column:1/-1;text-align:center;color:var(--mut);font-size:13px;padding:24px 0}
+.err{background:#2a0f1a;border:1px solid #7a2340;color:#ffb4c6;border-radius:14px;padding:16px;font-size:14px}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(9,7,17,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+.bar .in{max-width:720px;margin:0 auto}
+#dl{width:100%;padding:16px;border:none;border-radius:16px;font-size:15px;font-weight:800;letter-spacing:.06em;color:#fff;cursor:pointer;background:linear-gradient(135deg,#6d3fe0,#a855f7);font-family:inherit}
+#dl:disabled{opacity:.4;cursor:not-allowed}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="card"><div class="empty">Memuat...</div></div>
+</div>
+<div class="bar"><div class="in"><button id="dl" disabled>DOWNLOAD ZIP</button></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+let data = null, version = null, category = null, picks = {};
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+async function init() {
+  try {
+    const r = await fetch('data.json?v=' + Date.now());
+    if (!r.ok) throw new Error('data.json tidak ditemukan (status ' + r.status + ')');
+    data = await r.json();
+  } catch (e) {
+    document.getElementById('app').replaceChildren(el('div', 'err', 'Gagal memuat data: ' + e.message));
+    return;
+  }
+  version = data.versions[0].id;
+  category = data.categories[0].id;
+  render();
+}
+
+function render() {
+  const app = document.getElementById('app');
+  app.replaceChildren();
+
+  // Header
+  const head = el('header');
+  head.append(el('div', 'badge', 'ANDROID ONLY'));
+  const h1 = el('h1'); h1.append('VORTEX '); h1.append(el('span', '', 'CONFIG'));
+  head.append(h1, el('div', 'sub', 'CONFIG DOWNLOAD CENTER'));
+  app.append(head);
+
+  // Versi
+  const cv = el('div', 'card');
+  const rv = el('div', 'row');
+  rv.append(el('h2', '', 'PILIH VERSI'), el('div', 'count', data.versions.find(v => v.id === version).name.toUpperCase()));
+  const gv = el('div', 'grid2');
+  data.versions.forEach(v => {
+    const b = el('button', 'btn' + (v.id === version ? ' on' : ''), v.name);
+    b.onclick = () => { if (version !== v.id) { version = v.id; picks = {}; render(); } };
+    gv.append(b);
+  });
+  cv.append(rv, gv);
+  app.append(cv);
+
+  // Preview
+  const total = data.categories.length;
+  const picked = data.categories.filter(c => picks[c.id]);
+  const cp = el('div', 'card');
+  const rp = el('div', 'row');
+  rp.append(el('h2', '', 'PREVIEW PILIHAN'), el('div', 'count', picked.length + ' DIPILIH'));
+  const pv = el('div', 'preview');
+  if (!picked.length) pv.append(el('div', 'empty', 'Pilih item untuk lihat preview di sini.'));
+  picked.forEach(c => {
+    const chip = el('div', 'chip');
+    chip.append(el('b', '', c.name), el('span', '', picks[c.id].name));
+    const x = el('button', '', '×');
+    x.onclick = () => { delete picks[c.id]; render(); };
+    chip.append(x);
+    pv.append(chip);
+  });
+  cp.append(rp, pv);
+  app.append(cp);
+
+  // Pilih item
+  const ci = el('div', 'card');
+  const ri = el('div', 'row');
+  ri.append(el('h2', '', 'PILIH ITEM'), el('div', 'count', picked.length + ' / ' + total + ' DIPILIH'));
+  const cats = el('div', 'cats');
+  data.categories.forEach(c => {
+    const b = el('button', 'btn' + (c.id === category ? ' on' : ''), c.name);
+    if (picks[c.id]) b.append(el('span', 'n', '✓'));
+    b.onclick = () => { category = c.id; render(); };
+    cats.append(b);
+  });
+  const grid = el('div', 'items');
+  const list = data.items.filter(i => i.version === version && i.category === category);
+  if (!list.length) grid.append(el('div', 'none', 'Belum ada item di kategori ini.'));
+  list.forEach(it => {
+    const b = el('button', 'item' + (picks[category] && picks[category].id === it.id ? ' on' : ''));
+    const th = el('div', 'thumb');
+    if (it.thumb) {
+      const img = document.createElement('img');
+      img.src = it.thumb; img.loading = 'lazy'; img.alt = '';
+      img.onerror = () => { th.textContent = it.name.charAt(0).toUpperCase(); };
+      th.append(img);
+    } else {
+      th.textContent = it.name.charAt(0).toUpperCase();
+    }
+    b.append(th, el('div', 't', it.name));
+    b.onclick = () => {
+      if (picks[category] && picks[category].id === it.id) delete picks[category];
+      else picks[category] = it;
+      render();
+    };
+    grid.append(b);
+  });
+  ci.append(ri, cats, grid);
+  app.append(ci);
+
+  updateBar();
+}
+
+function updateBar() {
+  const n = data.categories.filter(c => picks[c.id]).length;
+  const btn = document.getElementById('dl');
+  btn.disabled = n === 0;
+  btn.textContent = n ? 'DOWNLOAD ZIP (' + n + ' ITEM)' : 'DOWNLOAD ZIP';
+}
+
+async function download() {
+  const list = data.categories.map(c => picks[c.id]).filter(Boolean);
+  if (!list.length) return;
+  const btn = document.getElementById('dl');
+  btn.disabled = true;
+  try {
+    const zip = new JSZip();
+    const root = zip.folder('VortexConfig-' + version);
+    for (let i = 0; i < list.length; i++) {
+      btn.textContent = 'Mengunduh ' + (i + 1) + '/' + list.length + '...';
+      const r = await fetch(list[i].file);
+      if (!r.ok) throw new Error(list[i].name + ' gagal diunduh (status ' + r.status + ')');
+      const name = decodeURIComponent(list[i].file.split('/').pop());
+      root.folder(list[i].category).file(name, await r.arrayBuffer());
+    }
+    btn.textContent = 'Membuat ZIP...';
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'VortexConfig-' + version + '.zip';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  } catch (e) {
+    alert('Gagal: ' + e.message);
+  } finally {
+    updateBar();
+  }
+}
+
+document.getElementById('dl').onclick = download;
+init();
+</script>
+</body>
+</html>
