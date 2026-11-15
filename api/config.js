@@ -15,6 +15,7 @@ export default async function handler() {
     const publicItems = items.map(({
       id,
       title,
+      category,
       fileName,
       fileUrl,
       imageUrl,
@@ -22,6 +23,7 @@ export default async function handler() {
     }) => ({
       id,
       title,
+      category: category || "lainnya",
       fileName,
       fileUrl,
       imageUrl,
