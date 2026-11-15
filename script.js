@@ -3,6 +3,24 @@ const API = "/api/config";
 const ZIP_FOLDER =
   "com.dts.freefireth/file/contentcache/Optional/android/gameassetbundles/";
 
+const CATEGORY_NAMES = {
+  rambut: "RAMBUT",
+  masker: "MASKER",
+  face: "FACE",
+  baju: "BAJU",
+  celana: "CELANA",
+  sepatu: "SEPATU"
+};
+
+const CATEGORY_ORDER = [
+  "rambut",
+  "masker",
+  "face",
+  "baju",
+  "celana",
+  "sepatu"
+];
+
 let configs = [];
 const selected = new Set();
 
@@ -21,6 +39,14 @@ function safeText(value) {
   })[char]);
 }
 
+function getCategory(item) {
+  const category = String(item.category || "").toLowerCase();
+
+  return CATEGORY_NAMES[category]
+    ? category
+    : "lainnya";
+}
+
 function render(list = configs) {
   if (!list.length) {
     grid.innerHTML = `
@@ -35,36 +61,76 @@ function render(list = configs) {
     return;
   }
 
-  grid.innerHTML = list.map(item => {
-    const isSelected = selected.has(item.id);
+  const grouped = {};
 
-    const thumb = item.imageUrl
-      ? `<img
-          class="config-thumb"
-          src="${safeText(item.imageUrl)}"
-          alt=""
-          loading="lazy"
-          onerror="this.style.display='none'"
-        >`
-      : `<div class="config-thumb config-placeholder">V</div>`;
+  list.forEach(item => {
+    const category = getCategory(item);
+
+    if (!grouped[category]) {
+      grouped[category] = [];
+    }
+
+    grouped[category].push(item);
+  });
+
+  const orderedCategories = [
+    ...CATEGORY_ORDER.filter(category => grouped[category]),
+    ...(grouped.lainnya ? ["lainnya"] : [])
+  ];
+
+  grid.innerHTML = orderedCategories.map(category => {
+    const items = grouped[category];
 
     return `
-      <article
-        class="config-card ${isSelected ? "selected" : ""}"
-        data-id="${safeText(item.id)}"
-        role="checkbox"
-        aria-checked="${isSelected}"
-        tabindex="0"
-      >
-        ${thumb}
+      <section class="config-category">
 
-        <div class="config-info">
-          <strong>${safeText(item.title)}</strong>
-          <small>${safeText(item.fileName || "Config file")}</small>
+        <div class="category-heading">
+          <div>
+            <span class="eyebrow">JENIS ITEM</span>
+            <h3>${CATEGORY_NAMES[category] || "LAINNYA"}</h3>
+          </div>
+
+          <span class="catalog-count">
+            ${items.length} FILE
+          </span>
         </div>
 
-        <span class="check-mark">✓</span>
-      </article>
+        <div class="config-category-grid">
+          ${items.map(item => {
+            const isSelected = selected.has(item.id);
+
+            const thumb = item.imageUrl
+              ? `<img
+                  class="config-thumb"
+                  src="${safeText(item.imageUrl)}"
+                  alt=""
+                  loading="lazy"
+                  onerror="this.style.display='none'"
+                >`
+              : `<div class="config-thumb config-placeholder">V</div>`;
+
+            return `
+              <article
+                class="config-card ${isSelected ? "selected" : ""}"
+                data-id="${safeText(item.id)}"
+                role="checkbox"
+                aria-checked="${isSelected}"
+                tabindex="0"
+              >
+                ${thumb}
+
+                <div class="config-info">
+                  <strong>${safeText(item.title)}</strong>
+                  <small>${safeText(item.fileName || "Config file")}</small>
+                </div>
+
+                <span class="check-mark">✓</span>
+              </article>
+            `;
+          }).join("")}
+        </div>
+
+      </section>
     `;
   }).join("");
 
@@ -97,11 +163,15 @@ function toggleItem(id) {
 function renderFiltered() {
   const term = searchInput.value.trim().toLowerCase();
 
-  const filtered = configs.filter(item =>
-    `${item.title || ""} ${item.fileName || ""}`
-      .toLowerCase()
-      .includes(term)
-  );
+  const filtered = configs.filter(item => {
+    const category = CATEGORY_NAMES[getCategory(item)] || "lainnya";
+
+    return `
+      ${item.title || ""}
+      ${item.fileName || ""}
+      ${category}
+    `.toLowerCase().includes(term);
+  });
 
   render(filtered);
 }
@@ -110,6 +180,7 @@ function updateSelection() {
   const count = selected.size;
 
   document.getElementById("countText").textContent = count;
+
   document.getElementById("downloadCount").textContent =
     `${configs.length} FILE`;
 
@@ -169,29 +240,37 @@ async function loadConfigs() {
   }
 }
 
+// PILIH SEMUA FILE YANG SEDANG DITAMPILKAN
 document.getElementById("selectAllBtn")
   .addEventListener("click", () => {
     const term = searchInput.value.trim().toLowerCase();
 
     configs
-      .filter(item =>
-        `${item.title || ""} ${item.fileName || ""}`
-          .toLowerCase()
-          .includes(term)
-      )
+      .filter(item => {
+        const category = CATEGORY_NAMES[getCategory(item)] || "lainnya";
+
+        return `
+          ${item.title || ""}
+          ${item.fileName || ""}
+          ${category}
+        `.toLowerCase().includes(term);
+      })
       .forEach(item => selected.add(item.id));
 
     renderFiltered();
   });
 
+// BATALKAN SEMUA PILIHAN
 document.getElementById("clearBtn")
   .addEventListener("click", () => {
     selected.clear();
     renderFiltered();
   });
 
+// PENCARIAN
 searchInput.addEventListener("input", renderFiltered);
 
+// DOWNLOAD ZIP
 downloadBtn.addEventListener("click", async () => {
   const items = configs.filter(item =>
     selected.has(item.id)
