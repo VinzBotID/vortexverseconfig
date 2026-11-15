@@ -17,6 +17,15 @@ export const config = {
 const MAX_CONFIG_SIZE = 3 * 1024 * 1024;
 const MAX_IMAGE_SIZE = 1 * 1024 * 1024;
 
+const ALLOWED_CATEGORIES = [
+  "rambut",
+  "masker",
+  "face",
+  "baju",
+  "celana",
+  "sepatu"
+];
+
 export default async function handler(request) {
   if (request.method !== "POST") {
     return json({
@@ -37,12 +46,23 @@ export default async function handler(request) {
       form.get("title") || ""
     ).trim();
 
+    const category = String(
+      form.get("category") || ""
+    ).trim().toLowerCase();
+
     const file = form.get("file");
     const image = form.get("image");
 
     if (!title) {
       return json({
         error: "Nama config wajib diisi."
+      }, 400);
+    }
+
+    // Validasi kategori
+    if (!ALLOWED_CATEGORIES.includes(category)) {
+      return json({
+        error: "Jenis item tidak valid."
       }, 400);
     }
 
@@ -117,6 +137,7 @@ export default async function handler(request) {
     const newItem = {
       id,
       title: title.slice(0, 80),
+      category,
       fileName,
       fileUrl: fileBlob.url,
       imageUrl,
