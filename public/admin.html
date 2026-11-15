@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07050d">
+<meta name="robots" content="noindex">
+<title>Vortex Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07050d;--gold1:#f8e9b8;--gold2:#d9ac4f;--gold:linear-gradient(135deg,#f8e9b8 0%,#d9ac4f 45%,#9a7424 100%);--text:#f4f0fb;--mut:#a79fbe;--line:rgba(255,255,255,.09);--glass:rgba(255,255,255,.045)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--text);font-family:Manrope,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding:26px 16px 80px;overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;z-index:-1;border-radius:50%;filter:blur(90px);pointer-events:none}
+body::before{width:420px;height:420px;background:#5b2fd1;top:-140px;left:-120px;opacity:.5}
+body::after{width:380px;height:380px;background:#b8861f;bottom:-140px;right:-120px;opacity:.25}
+.wrap{max-width:760px;margin:0 auto}
+header{text-align:center;margin:6px 0 24px}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.28em;color:var(--gold2);border:1px solid rgba(217,172,79,.35);background:rgba(217,172,79,.07);border-radius:999px;padding:7px 14px}
+h1{font-family:"Playfair Display",Georgia,serif;font-size:clamp(34px,10vw,52px);line-height:1.05;margin:14px 0 6px;font-weight:800}
+h1 .g{background:var(--gold);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:11px;letter-spacing:.4em;color:var(--mut);font-weight:600}
+.panel{position:relative;background:var(--glass);border:1px solid var(--line);border-radius:24px;padding:20px 18px;margin-bottom:16px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 20px 50px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.06)}
+.ph{margin-bottom:14px}
+.ph .no{font-family:"Playfair Display",serif;font-size:13px;color:var(--gold2);letter-spacing:.1em}
+.ph h2{font-size:16px;font-weight:800;letter-spacing:.1em;margin-top:2px}
+label{display:block;font-size:10.5px;font-weight:800;letter-spacing:.16em;color:var(--mut);margin:14px 0 6px;text-transform:uppercase}
+input[type=text],input[type=password],select{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--line);color:var(--text);border-radius:14px;padding:14px;font:inherit;font-size:14px;outline:none}
+input:focus,select:focus{border-color:var(--gold2)}
+select option{background:#14101f;color:#fff}
+input[type=file]{width:100%;padding:12px;border:1.5px dashed rgba(255,255,255,.2);border-radius:14px;background:rgba(0,0,0,.25);color:var(--mut);font:inherit;font-size:13px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.btn{display:block;width:100%;margin-top:18px;padding:16px;border:none;border-radius:16px;font:inherit;font-size:13px;font-weight:800;letter-spacing:.14em;color:#2b1d05;background:var(--gold);cursor:pointer;box-shadow:0 12px 32px -10px rgba(217,172,79,.6)}
+.btn:disabled{opacity:.5;cursor:wait}
+.sm{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);font:inherit;font-size:11px;font-weight:800;letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer}
+.sm.red{border-color:rgba(255,100,130,.5);color:#ff9fb4}
+.prog{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:14px}
+.prog i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
+.hint{font-size:12px;color:var(--mut);margin-top:6px;line-height:1.5}
+
+.chars{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cc{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:rgba(0,0,0,.25);text-align:center;padding-bottom:12px}
+.cc .im{aspect-ratio:3/4;background:radial-gradient(circle at 50% 30%,#4a2aa8,#150c30 75%);display:flex;align-items:center;justify-content:center;font-family:"Playfair Display",serif;font-size:80px;color:rgba(255,255,255,.15);font-weight:800;margin-bottom:10px;overflow:hidden}
+.cc .im img{width:100%;height:100%;object-fit:cover;object-position:top}
+.cc b{display:block;font-family:"Playfair Display",serif;font-size:18px;margin-bottom:8px}
+
+.filters{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.filters select{padding:11px 8px;font-size:12px}
+.li{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:16px;margin-bottom:10px;background:rgba(255,255,255,.03)}
+.li .im{width:58px;height:58px;border-radius:12px;background:#1b1330;flex:none;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--gold2);font-weight:800;font-size:20px}
+.li .im img{width:100%;height:100%;object-fit:cover}
+.li .tx{flex:1;min-width:0}
+.li .tx b{display:block;font-size:14px;word-break:break-word}
+.li .tx small{color:var(--mut);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+.li .ac{width:100%;display:flex;gap:6px;flex-wrap:wrap}
+.none{text-align:center;color:var(--mut);font-size:13px;padding:22px}
+.out{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-size:12px;color:var(--mut)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:20;max-width:92vw;padding:13px 18px;border-radius:14px;font-size:13px;font-weight:700;background:#1d1535;border:1px solid var(--gold2);color:var(--gold1);box-shadow:0 14px 40px -10px #000}
+.toast.bad{border-color:#ff7b9a;color:#ffc2d1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="tag">ADMIN PANEL</div>
+    <h1>VORTEX <span class="g">ADMIN</span></h1>
+    <div class="sub">KELOLA SEMUA DI SINI</div>
+  </header>
+
+  <section class="panel" id="login">
+    <div class="ph"><div class="no">00</div><h2>LOGIN ADMIN</h2></div>
+    <label>Password</label>
+    <input type="password" id="pw" placeholder="Masukkan password admin" autocomplete="current-password">
+    <button class="btn" id="btnLogin">MASUK</button>
+  </section>
+
+  <div id="dash" hidden>
+    <div class="out"><span>Login sebagai admin</span><button class="sm" id="btnOut">KELUAR</button></div>
+
+    <section class="panel">
+      <div class="ph"><div class="no">01</div><h2>GAMBAR CHARACTER</h2></div>
+      <div class="chars" id="chars"></div>
+      <div class="hint">Gambar portrait (3:4) paling bagus, misalnya 900×1200.</div>
+    </section>
+
+    <section class="panel">
+      <div class="ph"><div class="no">02</div><h2>TAMBAH ITEM BARU</h2></div>
+      <label>Nama item</label>
+      <input type="text" id="fName" placeholder="Contoh: Rambut Naga Emas" maxlength="80">
+      <div class="row3">
+        <div><label>Character</label><select id="fChar"></select></div>
+        <div><label>Versi</label><select id="fVer"></select></div>
+        <div><label>Kategori</label><select id="fCat"></select></div>
+      </div>
+      <label>File config (zip / file apa saja)</label>
+      <input type="file" id="fFile">
+      <label>Gambar item (opsional)</label>
+      <input type="file" id="fThumb" accept="image/*">
+      <div class="prog" id="prog" hidden><i id="progBar"></i></div>
+      <button class="btn" id="btnAdd">UPLOAD ITEM</button>
+    </section>
+
+    <section class="panel">
+      <div class="ph"><div class="no">03</div><h2>DAFTAR ITEM</h2></div>
+      <div class="filters">
+        <select id="lChar"></select><select id="lVer"></select><select id="lCat"></select>
+      </div>
+      <div id="list"></div>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+let PASS = sessionStorage.getItem('vx_pass') || '';
+let DB = null, uploadFn = null, tt;
+const $ = s => document.querySelector(s);
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function toast(msg, bad) {
+  const t = $('#toast');
+  t.textContent = msg; t.className = 'toast' + (bad ? ' bad' : ''); t.hidden = false;
+  clearTimeout(tt); tt = setTimeout(() => t.hidden = true, bad ? 6000 : 3000);
+}
+
+async function api(action, payload = {}) {
+  const r = await fetch('/api/admin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: PASS, action, ...payload }),
+  });
+  let j = {};
+  try { j = await r.json(); } catch {}
+  if (!r.ok) throw new Error(j.error || ('Error ' + r.status));
+  return j;
+}
+
+async function getUpload() {
+  if (!uploadFn) {
+    const m = await import('https://esm.sh/@vercel/blob@1.0.0/client');
+    uploadFn = m.upload;
+  }
+  return uploadFn;
+}
+async function uploadFile(file, folder, onProg) {
+  const up = await getUpload();
+  const safe = file.name.replace(/[^\w.\-]+/g, '_');
+  const blob = await up(folder + '/' + safe, file, {
+    access: 'public',
+    handleUploadUrl: '/api/upload',
+    clientPayload: PASS,
+    multipart: file.size > 8 * 1024 * 1024,
+    onUploadProgress: e => onProg && onProg(e.percentage),
+  });
+  return blob.url;
+}
+
+async function loadDB() {
+  const r = await fetch('/api/data?t=' + Date.now());
+  let j = {};
+  try { j = await r.json(); } catch {}
+  if (!r.ok) throw new Error(j.error || ('Gagal memuat data (' + r.status + ')'));
+  DB = j;
+}
+
+function fill(sel, list, allLabel) {
+  const cur = sel.value;
+  sel.replaceChildren();
+  if (allLabel) { const o = el('option', '', allLabel); o.value = ''; sel.append(o); }
+  list.forEach(x => { const o = el('option', '', x.name); o.value = x.id; sel.append(o); });
+  if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
+}
+const nameOf = (list, id) => (list.find(x => x.id === id) || {}).name || id;
+
+function setupSelects() {
+  fill($('#fChar'), DB.characters); fill($('#fVer'), DB.versions); fill($('#fCat'), DB.categories);
+  fill($('#lChar'), DB.characters, 'Semua character');
+  fill($('#lVer'), DB.versions, 'Semua versi');
+  fill($('#lCat'), DB.categories, 'Semua kategori');
+}
+
+function pick(accept, cb) {
+  const i = document.createElement('input');
+  i.type = 'file'; if (accept) i.accept = accept;
+  i.onchange = () => { if (i.files[0]) cb(i.files[0]); };
+  i.click();
+}
+
+function renderChars() {
+  const box = $('#chars');
+  box.replaceChildren();
+  DB.characters.forEach(c => {
+    const card = el('div', 'cc');
+    const im = el('div', 'im', c.name.charAt(0));
+    if (c.image) { const img = document.createElement('img'); img.src = c.image; img.alt = ''; im.textContent = ''; im.append(img); }
+    const b = el('button', 'sm', 'GANTI GAMBAR');
+    b.onclick = () => pick('image/*', async f => {
+      try {
+        toast('Mengunggah gambar ' + c.name + '...');
+        const url = await uploadFile(f, 'characters/' + c.id);
+        await api('setCharacterImage', { id: c.id, image: url });
+        await loadDB(); renderChars(); toast('Gambar ' + c.name + ' diperbarui');
+      } catch (e) { toast(e.message, true); }
+    });
+    card.append(im, el('b', '', c.name), b);
+    box.append(card);
+  });
+}
+
+function renderList() {
+  const box = $('#list');
+  box.replaceChildren();
+  const fc = $('#lChar').value, fv = $('#lVer').value, fk = $('#lCat').value;
+  const items = DB.items
+    .filter(i => (!fc || i.character === fc) && (!fv || i.version === fv) && (!fk || i.category === fk))
+    .sort((a, b) => b.createdAt - a.createdAt);
+  if (!items.length) { box.append(el('div', 'none', 'Belum ada item.')); return; }
+  items.forEach(it => {
+    const li = el('div', 'li');
+    const im = el('div', 'im', it.name.charAt(0).toUpperCase());
+    if (it.thumb) { const img = document.createElement('img'); img.src = it.thumb; img.alt = ''; im.textContent = ''; im.append(img); }
+    const tx = el('div', 'tx');
+    tx.append(el('b', '', it.name), el('small', '', nameOf(DB.characters, it.character) + ' • ' + nameOf(DB.versions, it.version) + ' • ' + nameOf(DB.categories, it.category)));
+    const ac = el('div', 'ac');
+
+    const bn = el('button', 'sm', 'UBAH NAMA');
+    bn.onclick = async () => {
+      const n = prompt('Nama baru:', it.name);
+      if (!n || !n.trim()) return;
+      try { await api('updateItem', { id: it.id, name: n }); await loadDB(); renderList(); toast('Nama diubah'); }
+      catch (e) { toast(e.message, true); }
+    };
+    const bi = el('button', 'sm', 'GANTI GAMBAR');
+    bi.onclick = () => pick('image/*', async f => {
+      try {
+        toast('Mengunggah gambar...');
+        const url = await uploadFile(f, 'thumbs');
+        await api('updateItem', { id: it.id, thumb: url });
+        await loadDB(); renderList(); toast('Gambar diganti');
+      } catch (e) { toast(e.message, true); }
+    });
+    const bf = el('button', 'sm', 'GANTI FILE');
+    bf.onclick = () => pick('', async f => {
+      try {
+        toast('Mengunggah file...');
+        const url = await uploadFile(f, 'files');
+        await api('updateItem', { id: it.id, file: { url, name: f.name } });
+        await loadDB(); renderList(); toast('File diganti');
+      } catch (e) { toast(e.message, true); }
+    });
+    const bd = el('button', 'sm red', 'HAPUS');
+    bd.onclick = async () => {
+      if (!confirm('Hapus "' + it.name + '"?')) return;
+      try { await api('deleteItem', { id: it.id }); await loadDB(); renderList(); toast('Item dihapus'); }
+      catch (e) { toast(e.message, true); }
+    };
+    ac.append(bn, bi, bf, bd);
+    li.append(im, tx, ac);
+    box.append(li);
+  });
+}
+
+async function addItem() {
+  const name = $('#fName').value.trim();
+  const file = $('#fFile').files[0];
+  const thumb = $('#fThumb').files[0];
+  if (!name) return toast('Nama item wajib diisi', true);
+  if (!file) return toast('Pilih file config dulu', true);
+  const btn = $('#btnAdd'), prog = $('#prog'), bar = $('#progBar');
+  btn.disabled = true; prog.hidden = false; bar.style.width = '0%';
+  try {
+    const scale = thumb ? 0.85 : 1;
+    btn.textContent = 'MENGUNGGAH FILE...';
+    const fileUrl = await uploadFile(file, 'files', p => bar.style.width = (p * scale) + '%');
+    let thumbUrl = null;
+    if (thumb) {
+      btn.textContent = 'MENGUNGGAH GAMBAR...';
+      thumbUrl = await uploadFile(thumb, 'thumbs', p => bar.style.width = (85 + p * 0.15) + '%');
+    }
+    btn.textContent = 'MENYIMPAN...';
+    await api('addItem', {
+      name, character: $('#fChar').value, version: $('#fVer').value, category: $('#fCat').value,
+      file: { url: fileUrl, name: file.name }, thumb: thumbUrl,
+    });
+    bar.style.width = '100%';
+    $('#fName').value = ''; $('#fFile').value = ''; $('#fThumb').value = '';
+    await loadDB(); renderList();
+    toast('Item berhasil ditambahkan');
+  } catch (e) {
+    toast(e.message, true);
+  } finally {
+    btn.disabled = false; btn.textContent = 'UPLOAD ITEM';
+    setTimeout(() => prog.hidden = true, 800);
+  }
+}
+
+async function start() {
+  $('#login').hidden = true; $('#dash').hidden = false;
+  await loadDB();
+  setupSelects(); renderChars(); renderList();
+}
+
+async function doLogin() {
+  PASS = $('#pw').value;
+  try {
+    await api('login');
+    sessionStorage.setItem('vx_pass', PASS);
+    await start();
+  } catch (e) {
+    PASS = '';
+    $('#login').hidden = false; $('#dash').hidden = true;
+    toast(e.message, true);
+  }
+}
+
+$('#btnLogin').onclick = doLogin;
+$('#pw').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
+$('#btnAdd').onclick = addItem;
+$('#btnOut').onclick = () => { sessionStorage.removeItem('vx_pass'); PASS = ''; location.reload(); };
+['#lChar', '#lVer', '#lCat'].forEach(s => $(s).onchange = renderList);
+
+if (PASS) {
+  api('login').then(start).catch(() => { PASS = ''; sessionStorage.removeItem('vx_pass'); });
+}
+</script>
+</body>
+</html>
