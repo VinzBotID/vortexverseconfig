@@ -1,0 +1,80 @@
+{
+  "versions": [
+    {
+      "id": "ori",
+      "name": "Android FF Ori"
+    },
+    {
+      "id": "max",
+      "name": "Android FF Max"
+    }
+  ],
+  "categories": [
+    {
+      "id": "rambut",
+      "name": "Rambut"
+    },
+    {
+      "id": "masker",
+      "name": "Masker"
+    },
+    {
+      "id": "face",
+      "name": "Face"
+    },
+    {
+      "id": "baju",
+      "name": "Baju"
+    },
+    {
+      "id": "celana",
+      "name": "Celana"
+    },
+    {
+      "id": "sepatu",
+      "name": "Sepatu"
+    }
+  ],
+  "items": [
+    {
+      "id": "ori-rambut-0",
+      "name": "Rambut Contoh 1",
+      "version": "ori",
+      "category": "rambut",
+      "file": "files/ori/rambut/Rambut%20Contoh%201.txt",
+      "thumb": null
+    },
+    {
+      "id": "ori-rambut-1",
+      "name": "Rambut Contoh 2",
+      "version": "ori",
+      "category": "rambut",
+      "file": "files/ori/rambut/Rambut%20Contoh%202.txt",
+      "thumb": null
+    },
+    {
+      "id": "ori-masker-2",
+      "name": "Masker Contoh 1",
+      "version": "ori",
+      "category": "masker",
+      "file": "files/ori/masker/Masker%20Contoh%201.txt",
+      "thumb": null
+    },
+    {
+      "id": "ori-baju-3",
+      "name": "Baju Contoh 1",
+      "version": "ori",
+      "category": "baju",
+      "file": "files/ori/baju/Baju%20Contoh%201.txt",
+      "thumb": null
+    },
+    {
+      "id": "max-rambut-4",
+      "name": "Rambut Max Contoh",
+      "version": "max",
+      "category": "rambut",
+      "file": "files/max/rambut/Rambut%20Max%20Contoh.txt",
+      "thumb": null
+    }
+  ]
+}
