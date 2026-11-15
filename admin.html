@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./style.css">
 
   <style>
     .admin-wrap {
@@ -54,7 +54,8 @@
       margin-bottom: 7px;
     }
 
-    .field input {
+    .field input,
+    .field select {
       width: 100%;
       padding: 12px;
       border: 1px solid var(--line);
@@ -62,6 +63,11 @@
       background: #0c0a14;
       color: var(--text);
       outline: none;
+      box-sizing: border-box;
+    }
+
+    .field select {
+      cursor: pointer;
     }
 
     .primary {
@@ -206,8 +212,25 @@
                 name="title"
                 maxlength="80"
                 required
-                placeholder="Contoh: Config Aim"
+                placeholder="Contoh: Item Rambut 01"
               >
+            </label>
+
+            <label class="field">
+              <span>Jenis Item</span>
+              <select
+                id="category"
+                name="category"
+                required
+              >
+                <option value="">Pilih jenis item</option>
+                <option value="rambut">Rambut</option>
+                <option value="masker">Masker</option>
+                <option value="face">Face</option>
+                <option value="baju">Baju</option>
+                <option value="celana">Celana</option>
+                <option value="sepatu">Sepatu</option>
+              </select>
             </label>
 
             <label class="field">
