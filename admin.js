@@ -3,6 +3,15 @@ const dashboard = document.getElementById("dashboard");
 const adminStatus = document.getElementById("adminStatus");
 const adminList = document.getElementById("adminList");
 
+const categoryNames = {
+  rambut: "Rambut",
+  masker: "Masker",
+  face: "Face",
+  baju: "Baju",
+  celana: "Celana",
+  sepatu: "Sepatu"
+};
+
 async function api(url, options = {}) {
   const response = await fetch(url, {
     credentials: "same-origin",
@@ -36,6 +45,7 @@ async function checkSession() {
   }
 }
 
+// LOGIN ADMIN
 document.getElementById("loginForm")
   .addEventListener("submit", async event => {
     event.preventDefault();
@@ -67,12 +77,21 @@ document.getElementById("loginForm")
     }
   });
 
+// UPLOAD CONFIG
 document.getElementById("uploadForm")
   .addEventListener("submit", async event => {
     event.preventDefault();
 
     const button = document.getElementById("uploadButton");
     const form = new FormData(event.currentTarget);
+
+    // Pastikan kategori sudah dipilih
+    const category = form.get("category");
+
+    if (!category || !categoryNames[category]) {
+      adminStatus.textContent = "Silakan pilih jenis item terlebih dahulu.";
+      return;
+    }
 
     button.disabled = true;
     button.textContent = "MENGUPLOAD...";
@@ -87,7 +106,8 @@ document.getElementById("uploadForm")
 
       event.currentTarget.reset();
 
-      adminStatus.textContent = "Config berhasil diunggah.";
+      adminStatus.textContent =
+        "Config berhasil diunggah.";
 
       await loadAdminConfigs();
 
@@ -100,6 +120,7 @@ document.getElementById("uploadForm")
     }
   });
 
+// MEMUAT DAFTAR CONFIG ADMIN
 async function loadAdminConfigs() {
   adminList.textContent = "Memuat data...";
 
@@ -115,26 +136,37 @@ async function loadAdminConfigs() {
       return;
     }
 
-    adminList.innerHTML = items.map(item => `
-      <div class="admin-item">
+    adminList.innerHTML = items.map(item => {
+      const category = categoryNames[item.category] || "Belum dikategorikan";
 
-        <div>
-          <strong>${escapeHTML(item.title)}</strong>
-          <small>${escapeHTML(item.fileName || "")}</small>
+      return `
+        <div class="admin-item">
+
+          <div>
+            <strong>${escapeHTML(item.title)}</strong>
+
+            <small>
+              Jenis: ${escapeHTML(category)}
+            </small>
+
+            <small>
+              ${escapeHTML(item.fileName || "")}
+            </small>
+          </div>
+
+          <div class="admin-actions">
+            <button
+              class="secondary danger"
+              data-delete="${escapeHTML(item.id)}"
+              type="button"
+            >
+              HAPUS
+            </button>
+          </div>
+
         </div>
-
-        <div class="admin-actions">
-          <button
-            class="secondary danger"
-            data-delete="${escapeHTML(item.id)}"
-            type="button"
-          >
-            HAPUS
-          </button>
-        </div>
-
-      </div>
-    `).join("");
+      `;
+    }).join("");
 
     adminList.querySelectorAll("[data-delete]")
       .forEach(button => {
@@ -171,6 +203,7 @@ async function loadAdminConfigs() {
   }
 }
 
+// MENCEGAH HTML DARI INPUT DITAMPILKAN SEBAGAI KODE
 function escapeHTML(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;",
@@ -181,6 +214,7 @@ function escapeHTML(value) {
   })[char]);
 }
 
+// LOGOUT ADMIN
 document.getElementById("logoutButton")
   .addEventListener("click", async () => {
     try {
@@ -192,4 +226,5 @@ document.getElementById("logoutButton")
     showDashboard(false);
   });
 
+// CEK SESSION
 checkSession();
